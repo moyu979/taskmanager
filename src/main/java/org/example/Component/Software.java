@@ -5,7 +5,7 @@ import java.util.Calendar;
 
 public interface Software {
 
-    void run();
-    Calendar getNextRunTime();
-    void setSettings(File settingsFile,File workFile);
+    Calendar run();
+    void setDatas(File data_path);
+    String getInfo();
 }

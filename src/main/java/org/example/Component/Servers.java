@@ -2,21 +2,26 @@ package org.example.Component;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.example.Datas.Softs;
+import org.example.Tools.CreateWorkTree;
 
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+
+import static java.lang.Thread.sleep;
 
 public class Servers implements Runnable{
     private static final Logger logger = LogManager.getLogger(Servers.class);
 
     //name,machines
     Map<String,Machine> machines;
-    File workFile;
+    public static File workFile;
+    Calendar nextRun;
+
     public Servers() throws Exception {
         workFile =new File("settings");
         constructor();
@@ -27,45 +32,15 @@ public class Servers implements Runnable{
         constructor();
     }
 
-    /*private void loadSofts() {
-        File softFile=new File(workFile,"softs");
-        if(!workFile.exists()){
-            logger.info("create new softFile, no soft will be run");
-            boolean success=workFile.mkdir();
-            if(!success){
-                logger.error("softFile in "+softFile.getPath()+" create failed");
-                return;
-            }
-        }
-        File[] lists=workFile.listFiles();
-        assert lists != null;
-        for(File file:lists){
-            if(file.getName().endsWith(".jar")){
-                if(loadSoft(file)){
-                    logger.info("load "+file.getName());
-                }else{
-                    logger.warn("load "+file.getName()+" failed");
-                }
-            }
-        }
-    }*/
-
-
-
     private void constructor() throws Exception {
+        //生成工作树
+        CreateWorkTree.createworkTree(workFile);
+
+        Softs.loadAllClass(new File(workFile,"softwares"));
+
         machines= new HashMap<>();
-        logger.debug("constructor start with path"+workFile.getPath());
         logger.info("working in "+workFile.getAbsolutePath());
 
-        if(!workFile.exists()){
-            File defaultSetting=new File("src/main/resources/settings");
-            if(defaultSetting.exists()){
-                logger.info("start with default settings");
-                copySettings(defaultSetting);
-            }else{
-                logger.error("init settings error, existing");
-            }
-        }
         logger.debug("start load settings");
         File settingFile=new File(workFile,"settings");
         FileInputStream fileInputStream=new FileInputStream(settingFile);
@@ -73,41 +48,30 @@ public class Servers implements Runnable{
         BufferedReader bufferedReader=new BufferedReader(inputStreamReader);
         String aLine=bufferedReader.readLine();
         while(aLine!=null){
+            logger.info("init with "+aLine);
             String[] lines=aLine.split(";");
             Machine machine=new Machine(lines[0],lines[1]);
-            if(machine!=null){
-                logger.error("init machine with name"+lines[0]+" and port "+lines[1]+" failed");
-            }else{
-                machines.put(machine.name,machine);
-                logger.info("init machine with name "+lines[0]+" and port "+lines[1]+" success");
-            }
+            machines.put(machine.name,machine);
+            logger.info("init machine with name "+lines[0]+" and port "+lines[1]+" success");
             aLine=bufferedReader.readLine();
         }
-        logger.debug("constructor end");
-        Machine machine1=new Machine("1234","1");
-        Machine machine2=new Machine("1234","2");
-        machines.put("1",machine1);
-        machines.put("2",machine2);
-    }
+        logger.debug("constructor end "+machines.size());
 
-    private void copySettings(File defaultSetting) {
-        logger.info("copping default files");
-        try {
-            Files.copy(Path.of(defaultSetting.getPath()), Path.of(workFile.getPath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        nextRun=Calendar.getInstance();
     }
 
     public void run(){
-        while(!Thread.currentThread().isInterrupted()){
+        logger.debug("runnn");
+        while(!Thread.currentThread().isInterrupted() && Calendar.getInstance().after(nextRun)){
             ArrayList<Thread> threads=new ArrayList<Thread>();
             logger.debug("running");
+            //新建一组线程
             for(Map.Entry<String,Machine> entry:machines.entrySet()){
                 Thread thread=new Thread(entry.getValue());
                 thread.start();
                 threads.add(thread);
             }
+            //运行等待
             for(Thread thread:threads){
                 try {
                     thread.join();
@@ -117,12 +81,47 @@ public class Servers implements Runnable{
                 }
             }
             logger.debug("finished running");
+            //统计下一次运行
+            nextRun=Calendar.getInstance();
+            nextRun.add(Calendar.YEAR,1);
+            for(Map.Entry<String,Machine> entry:machines.entrySet()){
+                if(nextRun.after(entry.getValue().nextRun)){
+                    nextRun=entry.getValue().nextRun;
+                }
+            }
+            logger.info("next run "+ nextRun.toString());
+
+            //运行完停一会儿
+            try {
+                sleep(5000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
 
     }
 
-    void getInfo(){
+    public void getInfo(){
         //TODO 获得机器信息
     }
+
+    public void addMachine(String para, String para1) {
+        //Todo 增加一台机器
+    }
+
+    public void add_soft(String softPath){
+        //Todo 增加一个软件
+    }
+    public void del_machine(String port,String name){
+        //Todo 删除一个机器
+    }
+    public void del_soft(String softPath){
+        //Todo 删除一台机器
+    }
+    public void close_server(){
+        //Todo 停止服务
+    }
+
+
 
 }
