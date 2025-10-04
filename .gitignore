@@ -4,6 +4,7 @@ target/
 !**/src/test/**/target/
 
 ### IntelliJ IDEA ###
+.idea
 .idea/modules.xml
 .idea/jarRepositories.xml
 .idea/compiler.xml
@@ -38,3 +39,18 @@ build/
 .DS_Store
 
 settings
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Maven target 输出目录
+*/target/
+target/
+
+# OS 级缓存（可选）
+.DS_Store
+Thumbs.db
+
+# Maven Wrapper 可选忽略
+.mvn/wrapper/maven-wrapper.jar
