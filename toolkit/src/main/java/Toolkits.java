@@ -7,13 +7,11 @@ public class Toolkits {
     private String rootDir;
     private String nowDir;
 
-    public Toolkits(){
+    public Toolkits(String port){
         ;
     }
 
-    public void setNowFile(String nowDir){
 
-    }
 
 
 

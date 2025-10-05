@@ -37,7 +37,7 @@ public class ADBConnector implements Connector{
     }
 
     public Mat screenCap() throws IOException {
-        ProcessBuilder pb = new ProcessBuilder(adbPath, "-s", this.port, "exec-out", "screencap", "-p");
+        ProcessBuilder pb = new ProcessBuilder(adbPath, "-s", this.ip+":"+this.port, "exec-out", "screencap", "-p");
         Process process = pb.start();
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -71,7 +71,7 @@ public class ADBConnector implements Connector{
 
     public void leftClick(int x, int y) throws IOException, InterruptedException {
         ProcessBuilder pb = new ProcessBuilder(
-                adbPath, "-s", this.port, "shell", "input", "tap", String.valueOf(x), String.valueOf(y));
+                adbPath, "-s", this.ip+":"+this.port, "shell", "input", "tap", String.valueOf(x), String.valueOf(y));
 
         Process process = pb.start();
         int exitCode = process.waitFor();
@@ -82,7 +82,7 @@ public class ADBConnector implements Connector{
     }
 
     public void longPress(int x, int y, int time) throws IOException {
-        ProcessBuilder pb = new ProcessBuilder(adbPath, "-s", this.port, "shell", "input", "swipe",
+        ProcessBuilder pb = new ProcessBuilder(adbPath, "-s", this.ip+":"+this.port, "shell", "input", "swipe",
                 String.valueOf(x),String.valueOf(x));
         Process process = pb.start();
     }
@@ -93,7 +93,7 @@ public class ADBConnector implements Connector{
      */
     public void loadScreenSize() throws IOException {
         // 1. 获取物理分辨率
-        ProcessBuilder pbSize = new ProcessBuilder("adb", "-s", this.port, "shell", "wm", "size");
+        ProcessBuilder pbSize = new ProcessBuilder("adb", "-s", this.ip+":"+this.port, "shell", "wm", "size");
 
         Process processSize = pbSize.start();
         int width = -1, height = -1;
@@ -112,7 +112,7 @@ public class ADBConnector implements Connector{
         if (width <= 0 || height <= 0) throw new IOException("无法获取屏幕分辨率");
 
         // 2. 获取屏幕方向
-        ProcessBuilder pbOri = new ProcessBuilder("adb", "-s", this.port, "shell", "dumpsys", "input");
+        ProcessBuilder pbOri = new ProcessBuilder("adb", "-s", this.ip+":"+this.port, "shell", "dumpsys", "input");
 
         Process processOri = pbOri.start();
         int orientation = 0;

@@ -1,8 +1,12 @@
 package FileGetter;
 
 import common.Area;
+import cvFunc.TemplateMatching;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
 
 import java.awt.*;
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -17,8 +21,16 @@ public class LocationGetter {
         *       如果存在，解析，并附加到文件后面，然后将文件刷回
         *       如果不存在，考虑报错
         * */
-        ;
-        return null;
+        File sourceFile = new File(path, screenSize.width + "_" + screenSize.height + "_source.png");
+        File templateFile = new File(path, screenSize.width + "_" + screenSize.height + "_template.png");
+        if (!sourceFile.exists() || !templateFile.exists()) {
+            return null;
+        }
+
+        Mat sourceImg = Imgcodecs.imread(sourceFile.getAbsolutePath(), Imgcodecs.IMREAD_COLOR);
+        Mat templateImg = Imgcodecs.imread(sourceFile.getAbsolutePath(), Imgcodecs.IMREAD_COLOR);
+        return TemplateMatching.matchTemplate(sourceImg,templateImg);
+
     }
 
     static public Map<Dimension,Area> loadxml(String path){
