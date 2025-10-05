@@ -301,7 +301,7 @@ class ScreenCaptureApp:
             width, height = self.image_size
             
             # 保存源图像
-            source_filename = f"source_{width}_{height}.png"
+            source_filename = f"{width}_{height}_source.png"
             source_path = os.path.join(self.path_var.get(), source_filename)
             cv2.imwrite(source_path, self.source_image)
             
@@ -309,7 +309,7 @@ class ScreenCaptureApp:
             x1, y1, x2, y2 = self.selection_coords
             temp_image = self.source_image[y1:y2, x1:x2]
             temp_width, temp_height = x2 - x1, y2 - y1
-            temp_filename = f"temp_{width}_{height}.png"
+            temp_filename = f"{width}_{height}_template.png"
             temp_path = os.path.join(self.path_var.get(), temp_filename)
             cv2.imwrite(temp_path, temp_image)
             

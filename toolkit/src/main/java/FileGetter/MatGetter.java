@@ -1,6 +1,7 @@
 package FileGetter;
 
 import org.opencv.core.Mat;
+import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 
 import java.awt.*;
@@ -8,6 +9,7 @@ import java.io.File;
 
 /**
  * 用于从制定位置，加载图片的静态工具，主要是用于加载匹配模版
+ * 目前版本查完了，基本上能用
  */
 public class MatGetter {
     static public Mat getLocation(Dimension screenSize, String path){
@@ -24,5 +26,17 @@ public class MatGetter {
 
         Mat img = Imgcodecs.imread(file.getAbsolutePath(), Imgcodecs.IMREAD_COLOR);
         return img.empty() ? null : img;
+    }
+
+    public static void showMat(Dimension screenSize, String path) {
+        String fileName = screenSize.width + "_" + screenSize.height + ".png";
+        File file = new File(path, fileName);
+
+        Mat img = Imgcodecs.imread(file.getAbsolutePath(), Imgcodecs.IMREAD_COLOR);
+
+        // 展示图像
+        HighGui.imshow("Mat Preview: " + fileName, img);
+        HighGui.waitKey(0);
+        HighGui.destroyAllWindows();
     }
 }

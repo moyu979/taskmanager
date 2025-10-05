@@ -39,4 +39,24 @@ public class Area {
     public Rectangle getRect() {
         return new Rectangle(rect);
     }
+
+    public int getX(){
+        return (int)this.rect.getX();
+    }
+
+    public int getY(){
+        return (int)this.rect.getY();
+    }
+
+    public int getWidth(){
+        return (int)this.rect.getWidth();
+    }
+
+    public int getHeight(){
+        return (int)this.rect.getHeight();
+    }
+
+    public String toString(){
+        return this.rect.toString();
+    }
 }
