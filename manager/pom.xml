@@ -6,16 +6,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.taskmanager</groupId>
-    <artifactId>taskmanager-parent</artifactId>
+    <artifactId>manager</artifactId>
     <version>1.0-SNAPSHOT</version>
 
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
 
-    <name>Task Manager Parent</name>
+    <name>Task Manager Manager</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release>
     </properties>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.taskmanager</groupId>
+            <artifactId>toolkit</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+    </dependencies>
 
 </project>
